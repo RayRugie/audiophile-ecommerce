@@ -1,0 +1,104 @@
+// AudioGear.module.scss
+@import '../../styles/_mixins';
+@import '../../styles/_breakpoints';
+
+.audioGear {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    width: 100%;
+    
+    @include tablet {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2rem 1rem;
+    }
+
+    @include mobile {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding: 2rem 1rem;
+    }
+  }
+  
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  
+    @include tablet {
+      order: 2;
+      text-align: center;
+    }
+
+    @include mobile {
+      order: 2;
+      text-align: center;
+    }
+  }
+  
+  .title {
+    font-size: 40px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin: 0;
+    width: 85%;
+  
+    @include tablet {
+      font-size: 2rem;
+      width: 100%;
+    }
+
+    @include mobile {
+      font-size: 2rem;
+      width: 100%;
+    }
+  }
+  
+  .highlight {
+    color: #d87d4a;
+  }
+  
+  .description {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: #7d7d7d;
+    margin: 0;
+    width: 85%;
+
+    @include tablet {
+      width: 100%;
+    }
+
+    @include mobile {
+      width: 100%;
+    }
+  }
+  
+  .imageWrapper {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    border-radius: 8px;
+    overflow: hidden;
+  
+    @include tablet {
+      order: 1;
+      height: 400px;
+    }
+  
+    @include mobile {
+      order: 1;
+      height: 300px;
+    }
+  }
+  
+  .image {
+    object-fit: cover;
+  }

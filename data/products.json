@@ -1,0 +1,43 @@
+[
+  {
+    "id": "xx99-mark-two-headphones",
+    "name": "XX99 Mark II Headphones",
+    "slug": "xx99-mark-two-headphones",
+    "category": "headphones",
+    "categoryImage": {
+      "mobile": "/images/headphones/xx99-mark-two-headphones/mobile.jpg",
+      "tablet": "/images/headphones/xx99-mark-two-headphones/tablet.jpg",
+      "desktop": "/images/headphones/xx99-mark-two-headphones/desktop.jpg"
+    },
+    "new": true,
+    "price": 2999,
+    "description": "The new XX99 Mark II headphones is the pinnacle of pristine audio. It redefines your premium headphone experience by reproducing the balanced depth and precision of studio-quality sound.",
+    "features": "Featuring a genuine leather head strap and premium earcups, these headphones deliver superior comfort for those who like to enjoy endless listening. It includes intuitive controls designed for any situation. Whether you're taking a business call or just in your own personal space, the auto on/off and pause features ensure that you'll never miss a beat.",
+    "includes": [
+      { "quantity": 1, "item": "Headphone unit" },
+      { "quantity": 2, "item": "Replacement earcups" },
+      { "quantity": 1, "item": "User manual" },
+      { "quantity": 1, "item": "3.5mm 5m audio cable" },
+      { "quantity": 1, "item": "Travel bag" }
+    ],
+    "gallery": {
+      "first": {
+        "mobile": "/images/products/xx99-mark-two-headphones/gallery-1-mobile.jpg",
+        "tablet": "/images/products/xx99-mark-two-headphones/gallery-1-tablet.jpg",
+        "desktop": "/images/products/xx99-mark-two-headphones/gallery-1-desktop.jpg"
+      },
+      "second": {
+        "mobile": "/images/products/xx99-mark-two-headphones/gallery-2-mobile.jpg",
+        "tablet": "/images/products/xx99-mark-two-headphones/gallery-2-tablet.jpg",
+        "desktop": "/images/products/xx99-mark-two-headphones/gallery-2-desktop.jpg"
+      },
+      "third": {
+        "mobile": "/images/products/xx99-mark-two-headphones/gallery-3-mobile.jpg",
+        "tablet": "/images/products/xx99-mark-two-headphones/gallery-3-tablet.jpg",
+        "desktop": "/images/products/xx99-mark-two-headphones/gallery-3-desktop.jpg"
+      }
+    },
+    "others": []
+  }
+]
+

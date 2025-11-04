@@ -1,0 +1,25 @@
+// Breakpoint Variables
+$breakpoints: (
+  'mobile': 0,
+  'tablet': 768px,
+  'desktop': 1024px,
+  'large-desktop': 1440px,
+);
+
+// Breakpoint function
+@function breakpoint($size) {
+  @return map-get($breakpoints, $size);
+}
+
+// Container max-widths
+$container-max-widths: (
+  'mobile': 100%,
+  'tablet': 768px,
+  'desktop': 1024px,
+  'large-desktop': 1440px,
+);
+
+@function container-max-width($size) {
+  @return map-get($container-max-widths, $size);
+}
+

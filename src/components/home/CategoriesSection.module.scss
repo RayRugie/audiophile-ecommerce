@@ -1,0 +1,184 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/breakpoints';
+
+.categories {
+  background-color: #FAFAFA;
+  padding: 5.5rem 0 7.5rem;
+  margin-top: 5rem;
+  
+  @include tablet {
+    padding: 6rem 0 6rem;
+  }
+  
+  @include desktop {
+    padding: 10rem 0 10.5rem;
+  }
+  
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+    
+    @include tablet {
+      padding: 0 40px;
+    }
+    
+    @include desktop {
+      padding: 0 165px;
+    }
+  }
+  
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4.25rem;
+    
+    @include tablet {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3.625rem;
+    }
+    
+    @include desktop {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4.875rem;
+    }
+  }
+  
+  .card {
+    position: relative;
+    background-color: #F1F1F1;
+    border-radius: 8px;
+    padding: 5.5rem 0 1.375rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.3s ease;
+    
+    @include tablet {
+      padding: 5.25rem 0 1.375rem;
+    }
+    
+    @include desktop {
+      padding: 7.25rem 0 1.875rem;
+    }
+    
+    &:hover {
+      .shopLink {
+        span {
+          color: $color-primary;
+        }
+      }
+    }
+  }
+  
+  .imageWrapper {
+    position: absolute;
+    top: -3.25rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 10rem;
+    height: 10rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+
+    @include mobile {
+        // height: 5%;
+    }
+    
+    @include tablet {
+      bottom: -2.75rem;
+      width: 5.75rem;
+      height: 8.75rem;
+    }
+    
+    @include desktop {
+      top: -3.5rem;
+      width: 11rem;
+      height: 11rem;
+    }
+    
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 9%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 15px;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.9) 0%, transparent 70%);
+      filter: blur(8px);
+      z-index: -1;
+
+      @include tablet {
+        width: 40%;
+        height: 10px;
+      }
+    }
+  }
+  
+  .image {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin-bottom: 20%;
+
+    @include mobile {
+        width: 60%;
+        height: 70%;
+    }
+  }
+  
+  .title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 1.07px;
+    text-transform: uppercase;
+    color: $color-black;
+    margin: 0 0 1.0625rem;
+    
+    @include desktop {
+      font-size: 18px;
+      letter-spacing: 1.29px;
+      margin: 0 0 0.9375rem;
+    }
+  }
+  
+  .shopLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8125rem;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease;
+    
+    span {
+      transition: color 0.3s ease;
+    }
+    
+    svg {
+      transition: transform 0.3s ease;
+    }
+    
+    &:hover {
+      span {
+        color: $color-primary;
+      }
+      
+      svg {
+        transform: translateX(3px);
+        
+        path {
+          stroke: lighten(#D87D4A, 10%);
+        }
+      }
+    }
+  }
+}

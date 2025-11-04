@@ -1,0 +1,243 @@
+@import '../../styles/variables';
+@import '../../styles/mixins';
+@import '../../styles/breakpoints';
+
+.footer {
+  background-color: #191919;
+  color: $color-white;
+  
+  .container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    width: 100%;
+    
+    @include tablet {
+      padding: 0 40px;
+    }
+    
+    @include desktop {
+      padding: 0 165px;
+    }
+  }
+  
+  .accentBar {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 101px;
+    height: 4px;
+    background-color: #D87D4A;
+    
+    @include desktop {
+      left: 165px;
+      transform: none;
+    }
+  }
+  
+  .content {
+    padding: 3.25rem 0 2.375rem;
+    
+    @include tablet {
+      padding: 3.75rem 0 2.875rem;
+    }
+    
+    @include desktop {
+      padding: 4.6875rem 0 3rem;
+    }
+  }
+  
+  .topSection {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 50%;
+    justify-content: space-evenly;
+    margin-bottom: 2.25rem;
+
+    @include mobile {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    @include tablet {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 0;
+      margin-bottom: 2rem;
+    }
+    
+    @include desktop {
+      align-items: center;
+      margin-bottom: 2.25rem;
+    }
+  }
+  
+  .logo {
+    display: flex;
+    align-items: center;
+    
+    img {
+      width: 143px;
+      height: 25px;
+    }
+  }
+  
+  .nav {
+    @include tablet {
+      order: 2;
+    }
+    
+    @include desktop {
+      order: 0;
+    }
+  }
+  
+  .navList {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include mobile {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    @include tablet {
+      flex-direction: row;
+      gap: 2.125rem;
+    }
+    
+    li {
+      margin: 0;
+    }
+  }
+  
+  .navLink {
+    display: block;
+    color: $color-white;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+    
+    &:hover {
+      color: #D87D4A;
+    }
+  }
+  
+  .middleSection {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 3rem;
+    margin-bottom: 2.375rem;
+
+    @include mobile {
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2rem;
+    }
+    
+    @include tablet {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 5rem;
+    }
+    
+    @include desktop {
+      margin-bottom: 3.5rem;
+    }
+  }
+  
+  .description {
+    color: $color-white;
+    opacity: 0.5;
+    font-size: 15px;
+    font-weight: var(--font-weight-medium);
+    line-height: 25px;
+    text-align: left;
+    margin: 0;
+    max-width: 540px;
+    justify-content: start;
+
+    @include mobile {
+      text-align: center;
+      max-width: 100%;
+    }
+    
+    @include tablet {
+      text-align: left;
+      max-width: 540px;
+    }
+    
+    @include desktop {
+      max-width: 540px;
+    }
+  }
+  
+  .socialMedia {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 5%;
+    
+    @include tablet {
+      justify-content: flex-end;
+    }
+    
+    a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $color-white;
+      transition: color 0.3s ease;
+      
+      &:hover {
+        color: #D87D4A;
+      }
+      
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+  }
+  
+  .bottomSection {
+    text-align: left;
+
+    @include mobile {
+      text-align: center;
+    }
+    
+    @include tablet {
+      text-align: left;
+    }
+  }
+  
+  .copyright {
+    color: $color-white;
+    opacity: 0.5;
+    font-size: 15px;
+    font-weight: var(--font-weight-bold);
+    line-height: 25px;
+    margin: 0;
+  }
+}
