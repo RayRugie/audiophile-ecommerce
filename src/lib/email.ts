@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import type { CreateEmailOptions } from 'resend';
+import { buildOrderConfirmationEmail, ShippingDetails } from './email-templates';
 
 // Initialize Resend client
 const apiKey = process.env.RESEND_API_KEY;
@@ -80,4 +81,40 @@ export async function sendEmail(options: EmailOptions) {
     console.error('Error sending email:', error);
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
+}
+
+export async function sendOrderConfirmationEmail(params: {
+  to: string;
+  customerName: string;
+  orderId: string;
+  items: Array<{ name: string; quantity: number; price: number }>;
+  grandTotal: number;
+  shipping: ShippingDetails;
+  orderUrl: string;
+  from?: string;
+}) {
+  const fromEmail = params.from || process.env.RESEND_FROM || 'Audiophile <noreply@audiophile.com>';
+  const html = buildOrderConfirmationEmail({
+    orderId: params.orderId,
+    customerName: params.customerName,
+    items: params.items,
+    grandTotal: params.grandTotal,
+    shipping: params.shipping,
+    orderUrl: params.orderUrl,
+    supportEmail: process.env.SUPPORT_EMAIL,
+    supportPhone: process.env.SUPPORT_PHONE,
+  });
+
+  const payload: CreateEmailOptions = {
+    from: fromEmail,
+    to: params.to,
+    subject: `Your Audiophile Order ${params.orderId}`,
+    html,
+  };
+
+  const { data, error } = await resend.emails.send(payload);
+  if (error) {
+    return { success: false, error: error instanceof Error ? error.message : JSON.stringify(error) };
+  }
+  return { success: true, messageId: data?.id };
 }
