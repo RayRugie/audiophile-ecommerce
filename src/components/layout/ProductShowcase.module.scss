@@ -1,5 +1,5 @@
 // ProductShowcase.module.scss
-@import '../../styles/_mixins';
+@use '../../styles/_mixins' as *;
 .showcase {
     max-width: 1200px;
     margin: 0 auto;
