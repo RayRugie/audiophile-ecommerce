@@ -30,8 +30,10 @@ export default function CheckoutPage() {
 
   const subtotal = totalPrice;
   const shipping = subtotal > 0 ? 50 : 0;
+  // VAT rounding semantics: treating subtotal as dollars. Use Math.round to nearest dollar.
   const vat = useMemo(() => Math.round(subtotal * VAT_RATE), [subtotal]);
-  const grandTotal = subtotal + shipping;
+  // Fix: include VAT in the grand total
+  const grandTotal = subtotal + shipping + vat;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,6 +52,11 @@ export default function CheckoutPage() {
 
     setSubmitting(true);
     try {
+      // Basic inline validation
+      if (!formData.name.trim()) throw new Error('Please enter your name');
+      if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) throw new Error('Please enter a valid email');
+      if (!formData.address.trim()) throw new Error('Please enter your address');
+
       const orderId = generateOrderId();
 
       // Prepare email payload
@@ -275,9 +282,7 @@ export default function CheckoutPage() {
               </div>
             )}
           </section>
-        </form>
-
-        <div className="checkout__summary">
+          <div className="checkout__summary">
           <h2 className="checkout__summaryTitle">SUMMARY</h2>
 
           <div className="checkout__items">
@@ -293,7 +298,7 @@ export default function CheckoutPage() {
                 </div>
                 <div className="checkout__itemDetails">
                   <p className="checkout__itemName">{item.shortName || item.name}</p>
-                  <p className="checkout__itemPrice">$ {item.price.toLocaleString()}</p>
+                  <p className="checkout__itemPrice">$ {item.price.toFixed(2)}</p>
                 </div>
                 <div className="checkout__itemQuantity">x{item.quantity}</div>
               </div>
@@ -303,26 +308,27 @@ export default function CheckoutPage() {
           <div className="checkout__totals">
             <div className="checkout__totalRow">
               <span className="checkout__totalLabel">TOTAL</span>
-              <span className="checkout__totalValue">$ {subtotal.toLocaleString()}</span>
+              <span className="checkout__totalValue">$ {subtotal.toFixed(2)}</span>
             </div>
             <div className="checkout__totalRow">
               <span className="checkout__totalLabel">SHIPPING</span>
-              <span className="checkout__totalValue">$ {shipping}</span>
+              <span className="checkout__totalValue">$ {shipping.toFixed(2)}</span>
             </div>
             <div className="checkout__totalRow">
               <span className="checkout__totalLabel">VAT (INCLUDED)</span>
-              <span className="checkout__totalValue">$ {vat.toLocaleString()}</span>
+              <span className="checkout__totalValue">$ {vat.toFixed(2)}</span>
             </div>
             <div className="checkout__totalRow checkout__totalRow--grand">
               <span className="checkout__totalLabel">GRAND TOTAL</span>
-              <span className="checkout__totalValue checkout__totalValue--grand">$ {grandTotal.toLocaleString()}</span>
+              <span className="checkout__totalValue checkout__totalValue--grand">$ {grandTotal.toFixed(2)}</span>
             </div>
           </div>
 
           <button type="submit" className="checkout__button" onClick={handleSubmit} disabled={submitting}>
             {submitting ? 'PROCESSING…' : 'CONTINUE & PAY'}
           </button>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );

@@ -4,12 +4,8 @@ import { buildOrderConfirmationEmail, ShippingDetails } from './email-templates'
 
 // Initialize Resend client
 const apiKey = process.env.RESEND_API_KEY;
-
-if (!apiKey) {
-  throw new Error('Missing RESEND_API_KEY environment variable');
-}
-
-export const resend = new Resend(apiKey);
+// Do not throw at import-time; initialize lazily
+export const resend = apiKey ? new Resend(apiKey) : undefined as unknown as Resend;
 
 // Email template types
 export interface EmailOptions {
@@ -39,6 +35,12 @@ export async function verifyEmailConnection() {
 // Send email function using Resend
 export async function sendEmail(options: EmailOptions) {
   try {
+    if (!apiKey) {
+      return { success: false, error: 'Email service not configured (missing RESEND_API_KEY)' } as {
+        success: false;
+        error: string;
+      };
+    }
     const fromEmail = options.from || process.env.RESEND_FROM || 'Audiophile <noreply@audiophile.com>';
     
     // Resend supports string or string[] for recipients
@@ -65,7 +67,7 @@ export async function sendEmail(options: EmailOptions) {
           text: options.text!,
         };
 
-    const { data, error } = await resend.emails.send(emailPayload);
+    const { data, error } = await (resend as Resend).emails.send(emailPayload);
 
     if (error) {
       console.error('Error sending email:', error);
@@ -93,6 +95,12 @@ export async function sendOrderConfirmationEmail(params: {
   orderUrl: string;
   from?: string;
 }) {
+  if (!apiKey) {
+    return { success: false, error: 'Email service not configured (missing RESEND_API_KEY)' } as {
+      success: false;
+      error: string;
+    };
+  }
   const fromEmail = params.from || process.env.RESEND_FROM || 'Audiophile <noreply@audiophile.com>';
   const html = buildOrderConfirmationEmail({
     orderId: params.orderId,
@@ -112,7 +120,7 @@ export async function sendOrderConfirmationEmail(params: {
     html,
   };
 
-  const { data, error } = await resend.emails.send(payload);
+  const { data, error } = await (resend as Resend).emails.send(payload);
   if (error) {
     return { success: false, error: error instanceof Error ? error.message : JSON.stringify(error) };
   }
