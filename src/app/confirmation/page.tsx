@@ -1,6 +1,5 @@
 "use client";
 
-import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useMemo, useRef } from 'react';
@@ -8,11 +7,6 @@ import { useSearchParams } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { formatPrice } from '@/lib/utils';
 import styles from './Confirmation.module.scss';
-
-export const metadata: Metadata = {
-  title: 'Order Confirmed | Audiophile',
-  description: 'Your order has been confirmed',
-};
 
 export default function ConfirmationPage() {
   const searchParams = useSearchParams();
