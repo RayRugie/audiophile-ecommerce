@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import type { CreateEmailOptions } from 'resend';
 
 // Initialize Resend client
 const apiKey = process.env.RESEND_API_KEY;
@@ -39,16 +40,31 @@ export async function sendEmail(options: EmailOptions) {
   try {
     const fromEmail = options.from || process.env.RESEND_FROM || 'Audiophile <noreply@audiophile.com>';
     
-    // Resend supports array of recipients
+    // Resend supports string or string[] for recipients
     const recipients = Array.isArray(options.to) ? options.to : [options.to];
 
-    const { data, error } = await resend.emails.send({
-      from: fromEmail,
-      to: recipients,
-      subject: options.subject,
-      html: options.html,
-      text: options.text,
-    });
+    // Ensure at least html or text is provided
+    if (!options.html && !options.text) {
+      throw new Error('Either html or text content must be provided');
+    }
+
+    // Build email payload using the non-template union of CreateEmailOptions
+    const toField: string | string[] = recipients.length === 1 ? recipients[0] : recipients;
+    const emailPayload: CreateEmailOptions = options.html
+      ? {
+          from: fromEmail,
+          to: toField,
+          subject: options.subject,
+          html: options.html,
+        }
+      : {
+          from: fromEmail,
+          to: toField,
+          subject: options.subject,
+          text: options.text!,
+        };
+
+    const { data, error } = await resend.emails.send(emailPayload);
 
     if (error) {
       console.error('Error sending email:', error);
@@ -65,4 +81,3 @@ export async function sendEmail(options: EmailOptions) {
     return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
   }
 }
-
