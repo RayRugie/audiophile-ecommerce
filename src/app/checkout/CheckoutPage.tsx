@@ -10,7 +10,6 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { useRouter } from 'next/navigation';
 import { generateOrderId } from '@/lib/utils';
-import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export default function CheckoutPage() {
   const { cartItems, totalPrice } = useCart();
@@ -65,16 +64,20 @@ export default function CheckoutPage() {
         country: formData.country,
       };
 
-      // Send confirmation email (non-blocking for UX, but we await to surface errors in logs)
+      // Send confirmation email via server route
       try {
-        await sendOrderConfirmationEmail({
-          to: formData.email,
-          customerName: formData.name,
-          orderId,
-          items,
-          grandTotal,
-          shipping: shippingDetails,
-          orderUrl: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/confirmation?orderId=${encodeURIComponent(orderId)}&grandTotal=${grandTotal}`,
+        await fetch('/api/order-confirmation', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: formData.email,
+            customerName: formData.name,
+            orderId,
+            items,
+            grandTotal,
+            shipping: shippingDetails,
+            orderUrl: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/confirmation?orderId=${encodeURIComponent(orderId)}&grandTotal=${grandTotal}`,
+          }),
         });
       } catch (err) {
         console.error('Email send failed', err);
