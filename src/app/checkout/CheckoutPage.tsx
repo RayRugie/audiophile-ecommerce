@@ -90,9 +90,11 @@ export default function CheckoutPage() {
             orderUrl,
           }),
         });
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({ error: res.statusText }));
-          console.error('Email API failed:', err);
+        const resJson = await res.json().catch(() => ({}));
+        if (!res.ok || (resJson && resJson.error)) {
+          console.error('Email API failed:', resJson || res.statusText);
+          // Optional: show a basic alert so user knows email failed, but still continue UX
+          // alert('Order placed, but confirmation email could not be sent.');
         }
       } catch (err) {
         console.error('Email send failed', err);

@@ -41,7 +41,8 @@ export async function sendEmail(options: EmailOptions) {
         error: string;
       };
     }
-    const fromEmail = options.from || process.env.RESEND_FROM || 'Audiophile <noreply@audiophile.com>';
+    // Use a safe default from for testing if RESEND_FROM is not configured
+    const fromEmail = options.from || process.env.RESEND_FROM || 'onboarding@resend.dev';
     
     // Resend supports string or string[] for recipients
     const recipients = Array.isArray(options.to) ? options.to : [options.to];
@@ -101,7 +102,8 @@ export async function sendOrderConfirmationEmail(params: {
       error: string;
     };
   }
-  const fromEmail = params.from || process.env.RESEND_FROM || 'Audiophile <noreply@audiophile.com>';
+  // Use a safe default from for testing if RESEND_FROM is not configured
+  const fromEmail = params.from || process.env.RESEND_FROM || 'onboarding@resend.dev';
   const html = buildOrderConfirmationEmail({
     orderId: params.orderId,
     customerName: params.customerName,

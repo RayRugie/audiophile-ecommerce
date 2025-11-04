@@ -29,7 +29,18 @@ export async function POST(req: NextRequest) {
     });
 
     if (!result.success) {
-      return NextResponse.json({ error: result.error || 'Failed to send email' }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: result.error || 'Failed to send email',
+          debug: {
+            to,
+            orderId,
+            hasApiKey: Boolean(process.env.RESEND_API_KEY),
+            from: process.env.RESEND_FROM || 'onboarding@resend.dev',
+          },
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({ success: true, messageId: result.messageId });
