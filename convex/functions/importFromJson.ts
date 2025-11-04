@@ -19,37 +19,7 @@ import { v } from 'convex/values';
  */
 export const importProducts = mutation({
   args: {
-    products: v.array(
-      v.object({
-        id: v.string(),
-        name: v.string(),
-        slug: v.string(),
-        category: v.string(),
-        categoryImage: v.string(),
-        new: v.boolean(),
-        price: v.number(),
-        description: v.string(),
-        features: v.string(),
-        includes: v.array(
-          v.object({
-            quantity: v.number(),
-            item: v.string(),
-          })
-        ),
-        gallery: v.object({
-          first: v.string(),
-          second: v.string(),
-          third: v.string(),
-        }),
-        others: v.array(
-          v.object({
-            slug: v.string(),
-            name: v.string(),
-            image: v.string(),
-          })
-        ),
-      })
-    ),
+    products: v.array(v.any()),
   },
   handler: async (ctx, args) => {
     let added = 0;
@@ -57,11 +27,18 @@ export const importProducts = mutation({
     const errors: string[] = [];
 
     for (const product of args.products) {
+      const productAny = product as any;
       try {
+        // Validate required fields
+        if (!productAny.id || !productAny.name || !productAny.slug || !productAny.category) {
+          errors.push(`Invalid product: missing required fields`);
+          continue;
+        }
+
         // Check if product already exists
         const existing = await ctx.db
           .query('products')
-          .withIndex('by_slug', (q) => q.eq('slug', product.slug))
+          .withIndex('by_slug', (q) => q.eq('slug', productAny.slug))
           .first();
 
         if (existing) {
@@ -69,10 +46,62 @@ export const importProducts = mutation({
           continue;
         }
 
-        await ctx.db.insert('products', product);
+        // Transform features string into array format
+        // Split by sentences (periods followed by space) and create objects
+        const featuresText = typeof productAny.features === 'string' ? productAny.features : '';
+        const sentences = featuresText.split(/\.\s+/).filter((s: string) => s.trim().length > 0);
+        const featuresArray = sentences.length > 0
+          ? [
+              { text1: sentences[0] + (sentences[0].endsWith('.') ? '' : '.') },
+              ...(sentences.length > 1 ? [{ text2: sentences.slice(1).join('. ') + '.' }] : []),
+            ]
+          : [{ text1: featuresText || '' }];
+
+        // Transform categoryImage - use desktop if object, otherwise use string
+        let categoryImage = '';
+        if (typeof productAny.categoryImage === 'string') {
+          categoryImage = productAny.categoryImage;
+        } else if (productAny.categoryImage && typeof productAny.categoryImage === 'object') {
+          categoryImage = productAny.categoryImage.desktop || productAny.categoryImage.tablet || productAny.categoryImage.mobile || '';
+        }
+
+        // Transform gallery - use desktop if object, otherwise use string
+        const getGalleryImage = (galleryItem: any): string => {
+          if (typeof galleryItem === 'string') {
+            return galleryItem;
+          }
+          if (galleryItem && typeof galleryItem === 'object') {
+            return galleryItem.desktop || galleryItem.tablet || galleryItem.mobile || '';
+          }
+          return '';
+        };
+
+        const gallery = {
+          first: getGalleryImage(productAny.gallery?.first || ''),
+          second: getGalleryImage(productAny.gallery?.second || ''),
+          third: getGalleryImage(productAny.gallery?.third || ''),
+        };
+
+        // Prepare product data for insertion
+        const productData = {
+          id: productAny.id,
+          name: productAny.name,
+          slug: productAny.slug,
+          category: productAny.category,
+          categoryImage,
+          new: productAny.new,
+          price: productAny.price,
+          description: productAny.description,
+          features: featuresArray,
+          includes: productAny.includes,
+          gallery,
+          others: productAny.others,
+        };
+
+        await ctx.db.insert('products', productData);
         added++;
       } catch (error) {
-        errors.push(`Failed to add ${product.name}: ${error}`);
+        errors.push(`Failed to add ${productAny.name || 'unknown'}: ${error}`);
       }
     }
 
