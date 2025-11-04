@@ -8,9 +8,13 @@ import { useCart } from '@/context/CartContext';
 import { VAT_RATE } from '@/lib/constants';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { useRouter } from 'next/navigation';
+import { generateOrderId } from '@/lib/utils';
+import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export default function CheckoutPage() {
   const { cartItems, totalPrice } = useCart();
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
     name: 'Alexei Ward',
@@ -39,10 +43,48 @@ export default function CheckoutPage() {
     setFormData(prev => ({ ...prev, paymentMethod: method }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Handle checkout logic here
+    if (cartItems.length === 0 || submitting) return;
+
+    setSubmitting(true);
+    try {
+      const orderId = generateOrderId();
+
+      // Prepare email payload
+      const items = cartItems.map((i) => ({ name: i.name, quantity: i.quantity, price: i.price }));
+      const shippingDetails = {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        city: formData.city,
+        zipCode: formData.zipCode,
+        country: formData.country,
+      };
+
+      // Send confirmation email (non-blocking for UX, but we await to surface errors in logs)
+      try {
+        await sendOrderConfirmationEmail({
+          to: formData.email,
+          customerName: formData.name,
+          orderId,
+          items,
+          grandTotal,
+          shipping: shippingDetails,
+          orderUrl: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/confirmation?orderId=${encodeURIComponent(orderId)}&grandTotal=${grandTotal}`,
+        });
+      } catch (err) {
+        console.error('Email send failed', err);
+      }
+
+      // Navigate to confirmation
+      router.push(`/confirmation?orderId=${encodeURIComponent(orderId)}&grandTotal=${grandTotal}`);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -266,8 +308,8 @@ export default function CheckoutPage() {
             </div>
           </div>
 
-          <button type="submit" className="checkout__button" onClick={handleSubmit}>
-            CONTINUE & PAY
+          <button type="submit" className="checkout__button" onClick={handleSubmit} disabled={submitting}>
+            {submitting ? 'PROCESSING…' : 'CONTINUE & PAY'}
           </button>
         </div>
       </div>
