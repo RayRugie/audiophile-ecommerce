@@ -64,9 +64,13 @@ export default function CheckoutPage() {
         country: formData.country,
       };
 
+      // Build absolute order URL for email CTA
+      const origin = typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_SITE_URL || '');
+      const orderUrl = `${origin}/confirmation?orderId=${encodeURIComponent(orderId)}&grandTotal=${grandTotal}`;
+
       // Send confirmation email via server route
       try {
-        await fetch('/api/order-confirmation', {
+        const res = await fetch('/api/order-confirmation', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -76,9 +80,13 @@ export default function CheckoutPage() {
             items,
             grandTotal,
             shipping: shippingDetails,
-            orderUrl: `${process.env.NEXT_PUBLIC_SITE_URL || ''}/confirmation?orderId=${encodeURIComponent(orderId)}&grandTotal=${grandTotal}`,
+            orderUrl,
           }),
         });
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({ error: res.statusText }));
+          console.error('Email API failed:', err);
+        }
       } catch (err) {
         console.error('Email send failed', err);
       }
